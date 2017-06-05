@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+		<h1>我是标签</h1>
+		<div class="imclass">我是一个类</div>
+		<div id="imid">我的一个id</div>
+		var 和let区别：
+		1、var x=1, var x=2,打印出来是2,var可以重复声明
+		  let y=1, let y=2,打印报错,let 不可以重复声明,改变赋值y=2 才行。
+		2、 作用域不同，
+		外部var声明的值会被内部var声明的值覆盖
+		外部let声明的值不会会被内部let声明的值覆盖
+		<script>
+		
+
+		return arr.filter(function(element){
+			if(element === 1){return true;}
+			else{
+			 for(let i=2; i<Math.sqrt(element); i++){
+			            if(element % i == 0){return false;break;}
+			        }
+			    }
+
+			}
+		}
+
+			// var x=1;
+			// var x=11;
+			// let y=2;
+			//  y=22;
+			// function sayx() {
+				
+			// 	console.log(x);
+			// }
+			// function sayy() {
+				
+			// 	console.log(y);
+			// }
+			// sayx();
+			// sayy();
+
+			// function vx (){
+			//    var strx ="strx111";
+			//    {
+			//    		var strx ="strx222";
+			//    }
+		 //   		console.log(strx);
+			// }
+			// vx();
+			// function vy (){
+			//    let stry ="stry111";
+			//    {
+			//    		let stry ="stry222";
+			//    }
+		 //   		console.log(stry);
+			// }
+			// vy();
+
+		</script>
+	</body>
+</html>

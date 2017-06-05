@@ -1,0 +1,496 @@
+理解：
+工作区(理解成ide编辑代码)
+git分 (git add)暂存区 、 (git commit)版本库
+本地配置git仓库
+$ git config --global user.name "gitName"
+$ git config --global user.email "gitemail@example.com"
+
+创建文件夹
+$ mkdir learngit
+
+路径跳转
+$ cd learngit
+
+查看路径
+$ pwd
+
+把当前目录设置为管理仓库
+$ git init
+Initialized empty Git repository in /Users/michael/learngit/.git/
+
+$ git status 查看当前文件操作状态
+$ git add readme.txt 是把工作区修改后的文件放到暂存区内，等待提交到版本库里，类似购物车
+$ git commit -m "版本说明" 是把暂存区内的文件或文件群提交到版本库内
+$ git diff readme.txt 是把工作区的文件和暂存区的文件进行比对
+$ git diff HEAD -- readme.txt 是把工作去的文件和版本库里的最新版文件进行比对
+$ git log   查看提交历史，未来回退致现在  范围：现在，过去版本信息
+$ git log --pretty=oneline    查看提交历史--简化版
+$ git reflog  查看操作历史，未来回退致现在  范围：未来，现在，过去版本操作记录 含信息
+$ git reset --hard HEAD^    将内容回退致上一个版本
+$ git reset --hard HEAD^^   将内容回退致上上一个版本
+$ git reset --hard HEAD~100   将内容回退致上第100个版本
+$ git reset --hard 223190   将内容回退致指定版本
+$ git checkout readme.txt     内容修改后，无 git add到暂存区，运行代码后，将内容撤销到版本库中最新的文件内容
+                内容修改后，有 git add到暂存区，运行代码后，将内容撤销到暂存区中最新的文件内容
+$ git reset HEAD readme.txt     内容修改后，有 git add到暂存区，运行代码后，将暂存区的文件内容回退到版本库中最新的文件内容
+$ rm test.txt           删除文件
+$ git checkout -- text.txt    假如属于误删文件，可以恢复文件
+$ git rm test.txt         假如真要删除文件，可以把该文件从版本库中删除
+
+在文件被git add提交后，关掉git bash窗口 ，内容还是已经被add到暂存区
+
+建立远程仓库
+$ ssh-keygen -t rsa -C "youremail@example.com"  一路回车即可
+会在用户目录 生成 C:\Users\Administrator\.ssh
+.ssh文件下有  id_rsa和id_rsa.pub 两个文件
+登录git hub网站帐号，
+在setting->SSH and GPG keys->New SSH key,填写好标题，再将 id_rsa.pub 中的内容复制到key内容中。完成本地机和github托管的连接。
+
+关联远程仓库
+在github网站中新建仓库 New repository ，填好仓库名 用户名/learngit，其他默认，确定建立。
+在本地输入 $ git remote add origin https://github.com/blueshy/learngit.git   本地和git网站关联完毕
+$ git push -u origin master   将本地的内容推送到git网站关联好的仓库中
+以后在本地写好内容提交版本后，用
+
+$ git remote    查看远程仓库名称
+$ git remote -v   查看远程仓库名称，和详细信息,看到可以抓取和推送的origin的地址。如果没有推送权限，就看不到push的地址。
+origin  git@github.com:blueshy/gitskills.git (fetch)
+origin  git@github.com:blueshy/gitskills.git (push)
+
+$ git push origin master 即可将master分支下的内容推送更新到git网站的关联仓库中。
+
+
+克隆项目到本地
+$ git clone git@github.com:blueshy/gitskills.git  会在当前目录下生成项目文件
+
+分支操作
+$ git branch dev    创建分支dev
+$ git checkout dev    切换到分支dev
+$ git checkout -b dev 创建分支dev并切换到该分支
+$ git branch      查看所有分支
+$ git merge dev     把分支dev下的内容合并到当前分支
+$ git branch -d dev   删除分支dev
+$ git branch -D dev   强制删除未合并的分支dev,并将内容销毁
+$ git log --graph --pretty=oneline --abbrev-commit    查看分支历史
+
+储藏
+$ git stash         储藏当前提交到暂存区的内容，通常情况是为了到其他分支修复bug,将当前未完成未提交的文件储藏起来，
+              防止将未完成的文件带入到其他分支。在其他分支修复好bug，整合后，再切换到当前分支
+$ git stash apply     取出被储藏起来的文件，继续进行工作，
+$ git stash drop      并删除该储藏内容
+$ git stash pop       也可以用该代码，进行取出和删除，一步到位
+$ git stash list      也可先查看储藏内容的列表
+$ git stash apply stash@{0} 也可以指定取回储藏的内容
+$ git stash drop stash@{0}  也可以指定删除储藏的内容
+
+多人协作
+$ git clone git@github.com:blueshy/gitskills.git  克隆项目到本地，只包含master分支，假如需要其他分支，用
+$ git checkout -b dev origin/dev          创建远程项目的dev分支到本地
+$ git push origin dev               提交项目到远程仓库
+
+解决冲突
+$ git push origin dev               提交项目后发现有冲突，需要更新项目，用
+$ git pull                      从远程仓库中更新本地项目
+$ git branch --set-upstream dev origin/dev      假如没有和远程分支建立连接,用该代码建立连接
+                          继续push，发现有冲突则按提示修改有冲突的文件，修改好后add、commit
+                          继续push，完成。
+
+标签
+$ git tag v1.0                  为当前最新commit的版本创建tag
+
+$ git log --pretty=oneline --abbrev-commit    假如历史版本忘记了打上标签，可以先查看 log 历史，查出commit id
+$ git tag v0.9 84746f1              来给历史版本打上标签
+$ git tag                     查看标签历史
+$ git show v0.9                 查看指定标签的详细信息，来根据commit id 来提取内容
+$ git tag -d v0.9                 删除标签
+$ git push origin v1.0              推送标签到远程仓库
+$ git push origin --tags            一次性推送全部尚未推送到远程仓库的本地标签
+
+删除远程标签，要先删除本地标签，再push一下
+$ git tag -d v0.9
+$ git push origin :refs/tags/v0.9
+
+
+==============================================================================================
+本学习笔记基于 http://www.liaoxuefeng.com/     git教程
+
+本地配置git仓库
+$ git config --global user.name "gitName"
+$ git config --global user.email "gitemail@example.com"
+
+创建文件夹
+$ mkdir learngit
+
+路径跳转
+$ cd learngit
+
+查看路径
+$ pwd
+
+
+把当前目录设置为管理仓库
+$ git init
+Initialized empty Git repository in /Users/michael/learngit/.git/
+
+把文件添加到仓库
+$ git add readme.txt
+$ git add file2.txt file3.txt
+
+把文件提交到仓库
+$ git commit -m "wrote a readme file"
+[master (root-commit) cb926e7] wrote a readme file
+ 1 file changed, 2 insertions(+)
+ create mode 100644 readme.txt
+
+查看文件内容
+$ cat readme.txt
+Git is a distributed version control system.
+Git is free software distributed under the GPL.
+
+ (文件被修改后)查看状态
+$ git status
+ # On branch master
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#    modified:   readme.txt
+#
+no changes added to commit (use "git add" and/or "git commit -a")
+
+查看modified：文件的内容的不同之处，内容是工作区内的某个文件和暂存区内的该文件进行比对
+$ git diff readme.txt 
+diff --git a/readme.txt b/readme.txt
+index 46d49bf..9247db6 100644
+--- a/readme.txt
++++ b/readme.txt
+@@ -1,2 +1,2 @@
+-Git is a version control system.
++Git is a distributed version control system.
+ Git is free software.
+ 了解情况后提交被修改的文件
+ git add readme.txt
+ 再次查看状态
+$ git status
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#       modified:   readme.txt
+#
+将要被修改内容的文件是 readme.txt ，下一步可提交
+$ git commit -m "add distributed"
+[master ea34578] add distributed
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+提交后再次查看状态
+$ git status
+# On branch master
+nothing to commit (working directory clean)
+工作目录干净
+
+
+查看提交历史
+$ git log
+commit d2104caaf74d9480919027d911f679b688c8a2bf
+Author: blueshy <344811317@qq.com>
+Date:   Thu May 25 10:40:35 2017 +0800
+
+    append gpl
+
+commit 7054ae5517dd2ee53911f7722a9fe3e2ac2543b7
+Author: blueshy <344811317@qq.com>
+Date:   Thu May 25 10:35:41 2017 +0800
+
+    add distributed
+
+commit 2231906fcc7238c98923cb5e23ab4c9b46ca97c3
+Author: blueshy <344811317@qq.com>
+Date:   Thu May 25 10:18:37 2017 +0800
+
+    wrote a readme file
+
+查看提交历史--简化版
+$ git log --pretty=oneline
+d2104caaf74d9480919027d911f679b688c8a2bf append GPL
+7054ae5517dd2ee53911f7722a9fe3e2ac2543b7 add distributed
+2231906fcc7238c98923cb5e23ab4c9b46ca97c3 wrote a readme file
+
+将内容回退致上一个版本 HEAD^,回退致上上一个版本 HEAD^^,回退致上100个版本 HEAD~100
+$ git reset --hard HEAD^
+HEAD is now at ea34578 add distributed
+
+将内容回退致指定版本,后面的 commit id 可以不用写全，只要不与其他的重复就行。
+git reset --hard 223190
+
+查看操作历史，假如是从第3版回到第2版，那么git log 只能显示第2版和第1版
+因此 git log 只能显示现在和过去的版本
+而 git reflog 能显示之前的操作记录，并将commit id 显示出来，可以将版本跳转到任意版本
+$ git reflog
+2231906 HEAD@{0}: reset: moving to 223190
+7054ae5 HEAD@{1}: reset: moving to HEAD^
+d2104ca HEAD@{2}: commit: append gpl
+7054ae5 HEAD@{3}: commit: add distributed
+2231906 HEAD@{4}: commit (initial): wrote a readme file
+
+
+撤销修改
+1、前提：在readme.txt文件最后一行添加9999后，不git add 提交，运行代码
+$ git checkout readme.txt
+代码编辑器会弹出代码被修改，是否执行，是，代码回退到版本库中最新的文件代码，最后一行无9999
+2、前提：在readme.txt文件最后一行添加9999后，git add 提交，运行代码
+$ git checkout readme.txt
+无反应，继续在9999下一行添加0000
+代码编辑器会弹出代码被修改，是否执行，是，代码回退到暂存区中最新的文件代码，最后一行无0000
+
+撤销暂存区的文件，内容回到版本库中该文件的最新内容
+$ git reset HEAD readme.txt
+
+删除文件
+$ rm test.txt
+假如属于误删文件，可以用 git checkout -- text.txt 恢复文件
+假如真要删除文件，可以用 git rm test.txt 把该文件从版本库中删除
+再提交该版本和版本说明
+$ git commit -m "remove text.txt"
+[master 1974be3] remove text.txt
+ 1 file changed, 6 deletions(-)
+ delete mode 100644 text.txt
+
+建立远程仓库
+$ ssh-keygen -t rsa -C "youremail@example.com"	一路回车即可
+会在用户目录 生成 C:\Users\Administrator\.ssh
+.ssh文件下有	id_rsa和id_rsa.pub 两个文件
+
+登录git hub网站帐号，
+在setting->SSH and GPG keys->New SSH key,填写好标题，再将 id_rsa.pub 中的内容复制到key内容中。完成本地机和github托管的连接。
+在github网站中新建仓库 New repository ，填好仓库名 用户名/learngit，其他默认，确定建立。
+在本地输入 $ git remote add origin https://github.com/blueshy/learngit.git 	本地和git网站关联完毕
+$ git push -u origin master		将本地的内容推送到git网站关联好的仓库中
+以后在本地写好内容提交版本后，用 $ git push origin master 即可推送更新到git网站的关联仓库中。
+
+克隆项目到本地
+$ git clone git@github.com:blueshy/gitskills.git
+Cloning into 'gitskills'...
+remote: Counting objects: 3, done.
+remote: Total 3 (delta 0), reused 0 (delta 0)
+Receiving objects: 100% (3/3), done.
+会在当前目录下生成项目文件
+
+创建分支
+$ git checkout -b dev
+Switched to a new branch 'dev'
+等价于
+$ git branch dev
+$ git checkout dev
+Switched to branch 'dev'
+
+查看当前分支
+$ git branch
+* dev
+  master
+
+切换回master
+$ git checkout master
+
+将分支dev内的文件合并到master
+$ git merge dev
+Updating d17efd8..fec145a
+Fast-forward
+ readme.txt |    1 +
+ 1 file changed, 1 insertion(+)
+
+删除分支
+$ git branch -d dev
+Deleted branch dev (was fec145a)
+
+解决分支和master相同文件不同内容冲突
+创建分支dev后修改readme.md文件，在最后一行添加 dev add this line
+执行add和commit进行版本提交
+切换回master
+修改readme.md文件，在最后一行添加 master add this line
+执行add和commit进行版本提交
+现在分支dev和master都有个一个新提交，而且readme.md内容不同
+master进行与分支dev的合并
+$ git merge dev			普通合并，默认采用fast-forward模式，删除分支后，会丢掉分支信息
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+提示README.md合并冲突
+打开README.md 发现 内容增加了冲突说明	
+<<<<<<< HEAD
+master change this line
+=======
+dev add this line
+>>>>>>> dev
+
+
+
+使用 --no-ff 模式 合并，作用：会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息
+$ git merge --no-ff -m "merge with no-ff" dev
+Merge made by the 'recursive' strategy.
+ noff.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+ $ git log --graph --pretty=oneline --abbrev-commit
+* 607d700 dev add noff
+*   ae1dac0 fixed conflict
+|\
+| * 1b0fecb dev add RE last  line
+| * 9716ff9 add b.txt c.txt
+* | 18d099f master  add RE last line
+|/
+* da8dec2 add a.txt
+* 1e5075a push add-close contents
+* 9d148c5 add add-close.txt
+* 71656c6 Initial commit
+
+
+
+$ git log --graph --pretty=oneline --abbrev-commit
+*   2d786e7 merge with no-ff
+|\
+| * 3097d86 dev add noff contents
+|/
+* 607d700 dev add noff
+*   ae1dac0 fixed conflict
+|\
+| * 1b0fecb dev add RE last  line
+| * 9716ff9 add b.txt c.txt
+* | 18d099f master  add RE last line
+|/
+* da8dec2 add a.txt
+* 1e5075a push add-close contents
+* 9d148c5 add add-close.txt
+* 71656c6 Initial commit
+
+处理bug
+在分支dev下新建的文件和修改后的老文件(无git add或有git add)在切换到master时，新建的文件会被带入到master，同时老文件的内容修改也会被整合
+在分支dev下新建的文件和修改后的老文件(被commit)在切换到master时，新建的文件和修改后的老文件不会被带入到master。假如master需要整合dev下新建的文件和修改后的老文件，需要用 git merge dev
+假如在分支dev下开发一个页面，叫devapp.txt,并且开发到一半，还不能提交。
+这时在master最新版有个bug要处理，而且要马上，因此需要先保存当前分支dev下的状态，devapp.txt需要先放入暂存区，然后才能进行储藏，假如不进行储藏的话该新文件会被带入到master中，影响master项目的整洁性
+$ git stash		该命令会将放在暂存区内的文件储藏起来，文件夹该文件群消失，而且在分支dev stash储藏的内容 在其他分支也可以取出
+然后切换到master，这样文件为master状态下的内容
+$ git checkout master
+然后在master下创建分支 issue-100 在该分支下修复 index.txt 下的bug
+$ git checkout -b issue-100
+当bug修复后，提交当前版本
+$ git add index.txt
+$ git commit -m "issue100 bug is fixed"
+再切换回master进行合并，并删除该分支issue-100
+$ git checkout master
+
+$ git merge  --no-ff -m "merged bug fix 100" issue-100
+
+$ git branch -d issue-100
+然后再切回分支dev，用
+$ git stash apply 		取回最近一次暂存的文件，然后用
+$ git shtash drop		删除 stash 储藏的内容
+
+$ git stash list 		查看储藏的内容,是否已经清空
+stash@{0}: WIP on dev: 67d0d7a add 5co
+stash@{1}: WIP on dev: 84746f1 add master1
+stash@{2}: WIP on dev: f8960b7 dev add dev1
+stash@{3}: WIP on dev: 3097d86 dev add noff contents
+
+$ git stash pop			可以取回内容的同时，删除掉 stash 的内容
+$ git stash apply stash@{0} 	可以指定取回哪次stash的内容
+
+多人协作
+一般本地 推送到远程仓库的分支有 master(生产分支) 和 dev(开发分支)
+其他人进行共同开发时需要从远程仓库中克隆该项目	 
+$ git clone git@github.com:blueshy/gitskills.git 		该项目有 master 和 dev 两个分支
+而克隆下来的只有 master 分支
+$ git branch
+* master
+其他人要在dev分支上工作的话必须创建远程origin的dev分支到本地，于是他用这个命令创建本地dev分支
+$ git checkout -b dev origin/dev
+Branch dev set up to track remote branch dev from origin.
+Switched to a new branch 'dev'
+工作完成后，add和commit,并将内容推送到远程分支
+$ git push origin dev
+
+协作冲突
+假如在早上克隆下分支dev的文件后，下午完成工作并提交时，发现远程项目已经更新，
+$ git push origin dev
+To git@github.com:blueshy/gitskills.git
+ ! [rejected]        dev -> dev (fetch first)
+error: failed to push some refs to 'git@github.com:blueshy/gitskills.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+需要将最新内容下载下来
+$ git pull
+remote: Counting objects: 4, done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 4 (delta 0), reused 4 (delta 0), pack-reused 0
+Unpacking objects: 100% (4/4), done.
+From github.com:blueshy/gitskills
+   84746f1..8568a6b  dev        -> origin/dev
+There is no tracking information for the current branch.
+Please specify which branch you want to merge with.
+See git-pull(1) for details.
+
+    git pull <remote> <branch>
+
+If you wish to set tracking information for this branch you can do so with:
+
+    git branch --set-upstream-to=origin/<branch> dev
+
+发现没有指定本地dev分支与远程origin/dev分支的链接，用
+$ git branch --set-upstream dev origin/dev
+The --set-upstream flag is deprecated and will be removed. Consider using --track or --set-upstream-to
+Branch dev set up to track remote branch dev from origin.
+创建好连接，再pull最新内容
+$ git pull
+Auto-merging master1.txt
+CONFLICT (content): Merge conflict in master1.txt
+Automatic merge failed; fix conflicts and then commit the result.
+
+提示 master1.txt中有冲突，需要合并。打开master1.txt解决好冲突后保存，add、commit后再push即可
+$ git push origin dev
+Counting objects: 7, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (7/7), 682 bytes | 0 bytes/s, done.
+Total 7 (delta 0), reused 0 (delta 0)
+To git@github.com:blueshy/gitskills.git
+   8568a6b..ecf2fbe  dev -> dev
+
+标签
+标签的目的是为了更加容易查找某个版本的commit id，以免使用commit id 123456 这样一长串的 id 来记忆。到时可以提取某个标签来知道commit id
+$ git tag v1.0		为当前最新commit的版本创建tag
+假如历史版本忘记了打上标签，可以先查看 log 历史，查出commit id
+$ git log --pretty=oneline --abbrev-commit
+ecf2fbe merge master1.txt
+5e9ae78 master1,3.txt change
+8568a6b master1,2.txt change
+84746f1 add master1
+2a06257 zeor
+18d099f master  add RE last line
+da8dec2 add a.txt
+1e5075a push add-close contents
+9d148c5 add add-close.txt
+71656c6 Initial commit
+
+$ git tag v0.9 84746f1 	来给历史版本打上标签
+$ git tag 				查看标签历史
+$ git show v0.9			查看指定标签的详细信息，来根据commit id 来提取内容
+commit 84746f135f36fb51fc9775047e39ef9cff056581
+Author: blueshy <344811317@qq.com>
+Date:   Thu Jun 1 21:56:55 2017 +0800
+
+    add master1
+
+diff --git a/master1.txt b/master1.txt
+new file mode 100644
+index 0000000..e69de29
+
+$ git tag -d v0.9 			删除标签
+$ git push origin v1.0 		推送标签到远程仓库
+$ git push origin --tags	一次性推送全部尚未推送到远程仓库的本地标签
+删除远程标签，要先删除本地标签，再push一下
+$ git tag -d v0.9
+$ git push origin :refs/tags/v0.9
+
